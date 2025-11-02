@@ -47,8 +47,16 @@ class JSON:
             json.dump(data, json_file, indent=4)
 
     def read_info(self):
+        default_value = (1, 1)
+        default_next_key = 0
         with open('walk_info.json', 'r') as json_file:
-            data = json.load(json_file)
+            try:
+                data = json.load(json_file)
+            except json.JSONDecodeError:
+                return default_value, default_next_key
+            if not data:
+                return default_value, default_next_key
+
             last_key = list(data.keys())[-1]
             last_value = data[last_key]
             next_key = int(last_key) + 1
@@ -151,6 +159,8 @@ player = None
 
 json_file = JSON("walk_info.json")
 
+start_x, start_y = 1, 1
+
 key_for_json = 0
 
 check_move = 0
@@ -165,20 +175,18 @@ start_input = input("Ти хочеш продовжити з моменту де
 if start_input == "y":
     start_position, next_index = json_file.read_info()
     next_index -= 1
-    print(start_position, next_index)
-    if start_position is not None:
-        player = Player(start_position[0], start_position[1])
+    if start_position != (1, 1) or next_index > 0:
+        start_x, start_y = start_position
         key_for_json = next_index
         check_move = next_index
     else:
         json_file.clear()
-        player = Player(1, 1)
-        game = Game(maze, player)
-        print("Не знайшов данні, Шарік буде бігти зі старту")
-
 else:
     json_file.clear()
-    player = Player(1, 1)
+
+player = Player(start_x, start_y)
+game_on = Game(maze, player)
+
 
 game = Game(maze, player)
 
