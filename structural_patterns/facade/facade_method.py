@@ -51,3 +51,16 @@ class HomeTheaterFacade:
         self.dvd.off()
         self.sound.off()
         self.tv.off()
+
+
+if __name__ == "__main__":
+    tv_component = TV()
+    dvd_component = DVDPlayer()
+    sound_component = SoundSystem()
+    lights_component = Lights()
+
+    home_theater = HomeTheaterFacade(tv_component, dvd_component, sound_component, lights_component)
+    home_theater.watch_movie("Матриця")
+
+    print("-" * 20)
+    home_theater.end_movie()

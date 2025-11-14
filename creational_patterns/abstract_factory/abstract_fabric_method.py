@@ -1,86 +1,120 @@
 from abc import ABC, abstractmethod
 
-# Абстрактна фабрика
-class AbstractFactory(ABC):
+
+
+class Engine(ABC):
     @abstractmethod
-    def create_product_a(self):
-        pass
+    def info(self): pass
+    @abstractmethod
+    def price(self): pass
+
+
+class Body(ABC):
+    @abstractmethod
+    def info(self): pass
+    @abstractmethod
+    def price(self): pass
+
+
+
+
+
+class ElectricEngine(Engine):
+    def info(self):
+        return "Електродвигун — 250 кВт, без викидів CO₂"
+    def price(self):
+        return 10000
+
+class ElectricBody(Body):
+    def info(self):
+        return "Легкий алюмінієвий кузов з аеродинамічним дизайном"
+    def price(self):
+        return 7000
+
+
+
+class GasolineEngine(Engine):
+    def info(self):
+        return "Бензиновий двигун — 2.0 Turbo, 180 к.с."
+    def price(self):
+        return 8000
+
+class GasolineBody(Body):
+    def info(self):
+        return "Кузов зі сталі, класичний дизайн седану"
+    def price(self):
+        return 6000
+
+
+
+class DieselEngine(Engine):
+    def info(self):
+        return "Дизельний двигун — 2.5 TDI, 160 к.с., економний"
+    def price(self):
+        return 7000
+
+class DieselBody(Body):
+    def info(self):
+        return "Посилений кузов для вантажів або позашляховиків"
+    def price(self):
+        return 6500
+
+
+
+
+class AbstractCarFactory(ABC):
+    @abstractmethod
+    def create_engine(self): pass
 
     @abstractmethod
-    def create_product_b(self):
-        pass
-
-# Конкретні фабрики
-class ConcreteFactory1(AbstractFactory):
-    def create_product_a(self):
-        return ConcreteProductA1()
-
-    def create_product_b(self):
-        return ConcreteProductB1()
-
-class ConcreteFactory2(AbstractFactory):
-    def create_product_a(self):
-        return ConcreteProductA2()
-
-    def create_product_b(self):
-        return ConcreteProductB2()
-
-# Абстрактні продукти
-class AbstractProductA(ABC):
-    @abstractmethod
-    def useful_function_a(self):
-        pass
-
-class AbstractProductB(ABC):
-    @abstractmethod
-    def useful_function_b(self):
-        pass
-
-    @abstractmethod
-    def cooperate_with(self, collaboration: AbstractProductA):
-        pass
-
-# Конкретні продукти для сімейства 1
-class ConcreteProductA1(AbstractProductA):
-    def useful_function_a(self):
-        return "Результат Продукту A1"
-
-class ConcreteProductB1(AbstractProductB):
-    def useful_function_b(self):
-        return "Результат Продукту B1"
-
-    def cooperate_with(self, collaboration: AbstractProductA):
-        result = collaboration.useful_function_a()
-        return f"({self.useful_function_b()}) взаємодіє з ({result})"
+    def create_body(self): pass
 
 
-# Конкретні продукти для сімейства 2
-class ConcreteProductA2(AbstractProductA):
-    def useful_function_a(self):
-        return "Результат Продукту A2"
 
-class ConcreteProductB2(AbstractProductB):
-    def useful_function_b(self):
-        return "Результат Продукту B2"
+class ElectricCarFactory(AbstractCarFactory):
+    def create_engine(self):
+        return ElectricEngine()
+    def create_body(self):
+        return ElectricBody()
 
-    def cooperate_with(self, collaboration: AbstractProductA):
-        result = collaboration.useful_function_a()
-        return f"({self.useful_function_b()}) взаємодіє з ({result})"
+class GasolineCarFactory(AbstractCarFactory):
+    def create_engine(self):
+        return GasolineEngine()
+    def create_body(self):
+        return GasolineBody()
+
+class DieselCarFactory(AbstractCarFactory):
+    def create_engine(self):
+        return DieselEngine()
+    def create_body(self):
+        return DieselBody()
 
 
-# Клієнтський код
-def client_code(factory: AbstractFactory):
-    product_a = factory.create_product_a()
-    product_b = factory.create_product_b()
 
-    print("Клієнт надав запит на взаємодію з продуктом:")
-    print(product_b.cooperate_with(product_a))
+
+def build_car(factory: AbstractCarFactory):
+    engine = factory.create_engine()
+    body = factory.create_body()
+    print("\n--- Збірка авто завершена! ---")
+    print(engine.info())
+    print(body.info())
+    print(f"Загальна ціна авто: {engine.price() + body.price()} $")
+
+
 
 
 if __name__ == "__main__":
-    print("Клієнт працює з першою фабрикою:")
-    client_code(ConcreteFactory1())
-    print("\n" + "="*30 + "\n")
+    print("Виберіть тип машини:\n1. Електро\n2. Бензин\n3. Дизель")
+    choice = input("Ваш вибір: ")
 
-    print("Клієнт працює з другою фабрикою:")
-    client_code(ConcreteFactory2())
+    if choice == "1":
+        factory = ElectricCarFactory()
+    elif choice == "2":
+        factory = GasolineCarFactory()
+    elif choice == "3":
+        factory = DieselCarFactory()
+    else:
+        print("Невірний вибір!")
+        exit()
+
+    build_car(factory)

@@ -1,4 +1,4 @@
-class Pizza:
+class Pizza: # Передивиться з додаванням абстрактних класів
     def __init__(self):
         self.dough = None
         self.sauce = None

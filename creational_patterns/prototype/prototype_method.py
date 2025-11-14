@@ -8,7 +8,7 @@ class Enemies:
         self.hp = health
         self.dm = damage
 
-        #Надаємо кожному об'єкту унікальний id щоб не запутатись
+
         self.id = uuid.uuid4()
 
         self.inventory = inventory if inventory is not None else []
